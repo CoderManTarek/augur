@@ -60,8 +60,8 @@ def errors(logs_dir, worker):
             break
 
 def print_log(file, log_dir):
-    f = open(log_dir + "/" + file)
-    result = f.readlines()
+    with open(log_dir + "/" + file) as f:
+        result = f.readlines()
     print("********** Logfile: " + file)
     for log in result:
         print(log.strip())
