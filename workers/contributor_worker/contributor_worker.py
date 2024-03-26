@@ -209,7 +209,7 @@ class ContributorWorker(Worker):
                             cmt_cntrb['email'])
 
                 self.logger.info("Hitting endpoint: " + url + " ...\n")
-                r = requests.get(url=url, headers=self.headers)
+                r = requests.get(url=url, headers=self.headers, timeout=60)
                 self.update_gh_rate_limit(r)
                 results = r.json()
 
@@ -232,7 +232,7 @@ class ContributorWorker(Worker):
 
                 cntrb_url = ("https://api.github.com/users/" + match['login'])
                 self.logger.info("Hitting endpoint: " + cntrb_url + " ...\n")
-                r = requests.get(url=cntrb_url, headers=self.headers)
+                r = requests.get(url=cntrb_url, headers=self.headers, timeout=60)
                 self.update_gh_rate_limit(r)
                 contributor = r.json()
 

@@ -287,7 +287,7 @@ class GitHubWorker(Worker):
 
             while True:
                 self.logger.info("Hitting endpoint: " + events_url.format(i) + " ...\n")
-                r = requests.get(url=events_url.format(i), headers=self.headers)
+                r = requests.get(url=events_url.format(i), headers=self.headers, timeout=60)
                 self.update_gh_rate_limit(r)
 
                 # Find last page so we can decrement from there
@@ -339,7 +339,7 @@ class GitHubWorker(Worker):
                     # Need to hit this single contributor endpoint to get extra created at data...
                     cntrb_url = ("https://api.github.com/users/" + event['actor']['login'])
                     self.logger.info("Hitting endpoint: " + cntrb_url + " ...\n")
-                    r = requests.get(url=cntrb_url, headers=self.headers)
+                    r = requests.get(url=cntrb_url, headers=self.headers, timeout=60)
                     self.update_gh_rate_limit(r)
                     contributor = r.json()
 

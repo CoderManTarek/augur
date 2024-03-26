@@ -72,9 +72,9 @@ class InsightWorker(Worker):
             url = base_url + endpoint
             logging.info("Hitting endpoint: " + url + "\n")
             try:
-                data = requests.get(url=url).json()
+                data = requests.get(url=url, timeout=60).json()
             except:
-                data = json.loads(json.dumps(requests.get(url=url).text))
+                data = json.loads(json.dumps(requests.get(url=url, timeout=60).text))
 
             if len(data) == 0:
                 logging.info("Endpoint with url: {} returned an empty response. Moving on to next endpoint.\n".format(url))
@@ -331,7 +331,7 @@ class InsightWorker(Worker):
             # Hit endpoint
             url = base_url + endpoint['cm_info']
             logging.info("Hitting endpoint: " + url + "\n")
-            r = requests.get(url=url)
+            r = requests.get(url=url, timeout=60)
             data = r.json()
 
             def is_unique_key(key):
@@ -510,7 +510,7 @@ class InsightWorker(Worker):
                     'units_from_mean': units_from_mean,
                     'detection_method': insight['ri_detection_method']
                 }
-                requests.post('https://ejmoq97307.execute-api.us-east-1.amazonaws.com/dev/insight-event', json=to_send)
+                requests.post('https://ejmoq97307.execute-api.us-east-1.amazonaws.com/dev/insight-event', json=to_send, timeout=60)
         except Exception as e:
             logging.info("sending insight to jonah failed: {}".format(e))
 
@@ -654,7 +654,7 @@ class InsightWorker(Worker):
             "Hitting endpoint: http://{}:{}/api/unstable/metrics/status ...\n".format(
             self.config['api_host'],self.config['api_port']))
         r = requests.get(url='http://{}:{}/api/unstable/metrics/status'.format(
-            self.config['api_host'],self.config['api_port']))
+            self.config['api_host'],self.config['api_port']), timeout=60)
         data = r.json()
 
         active_metrics = [metric for metric in data if metric['backend_status'] == 'implemented']

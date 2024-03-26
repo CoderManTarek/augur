@@ -109,7 +109,7 @@ class RepoInfoWorker(Worker):
         data = None
         while num_attempts < 3:
             self.logger.info("Hitting endpoint: {} ...\n".format(url))
-            r = requests.post(url, json={'query': query}, headers=self.headers)
+            r = requests.post(url, json={'query': query}, headers=self.headers, timeout=60)
             self.update_gh_rate_limit(r)
 
             try:
@@ -227,7 +227,7 @@ class RepoInfoWorker(Worker):
 
         try:
             while True:
-                r = requests.get(url, headers=self.headers)
+                r = requests.get(url, headers=self.headers, timeout=60)
                 self.update_gh_rate_limit(r)
                 committers += len(r.json())
 
@@ -244,7 +244,7 @@ class RepoInfoWorker(Worker):
         self.logger.info('Querying parent info to verify if the repo is forked\n')
         url = f'https://api.github.com/repos/{owner}/{repo}'
 
-        r = requests.get(url, headers=self.headers)
+        r = requests.get(url, headers=self.headers, timeout=60)
         self.update_gh_rate_limit(r)
 
         data = self.get_repo_data(url, r)
@@ -260,7 +260,7 @@ class RepoInfoWorker(Worker):
         self.logger.info('Querying committers count\n')
         url = f'https://api.github.com/repos/{owner}/{repo}'
 
-        r = requests.get(url, headers=self.headers)
+        r = requests.get(url, headers=self.headers, timeout=60)
         self.update_gh_rate_limit(r)
 
         data = self.get_repo_data(url, r)

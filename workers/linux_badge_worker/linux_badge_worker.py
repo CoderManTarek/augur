@@ -45,7 +45,7 @@ class LinuxBadgeWorker(Worker):
 
         url = self.config['endpoint'] + extension
         self.logger.info("Hitting CII endpoint: " + url + " ...")
-        data = requests.get(url=url).json()
+        data = requests.get(url=url, timeout=60).json()
 
         if data != []:
             self.logger.info("Inserting badging data for " + git_url)

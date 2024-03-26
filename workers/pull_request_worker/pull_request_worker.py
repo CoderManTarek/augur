@@ -96,7 +96,7 @@ class GitHubPullRequestWorker(Worker):
                         f'page number {page_count}\n')
 
                     response = requests.post(base_url, json={'query': query.format(
-                        **before_parameters)}, headers=self.headers)
+                        **before_parameters)}, headers=self.headers, timeout=60)
 
                     self.update_gh_rate_limit(response)
 

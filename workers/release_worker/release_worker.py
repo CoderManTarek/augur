@@ -105,7 +105,7 @@ class ReleaseWorker(Worker):
         success = False
         while num_attempts < 3:
             self.logger.info("Hitting endpoint: {} ...\n".format(url))
-            r = requests.post(url, json={'query': query}, headers=self.headers)
+            r = requests.post(url, json={'query': query}, headers=self.headers, timeout=60)
             self.update_gh_rate_limit(r)
 
             try:

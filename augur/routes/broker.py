@@ -25,7 +25,7 @@ def send_task(worker_proxy):
 
     # Check if worker is alive
     r = requests.get('{}/AUGWOP/heartbeat'.format(
-        worker_proxy['location']))
+        worker_proxy['location']), timeout=60)
     j = r.json()
 
     if 'status' not in j:
@@ -52,7 +52,7 @@ def send_task(worker_proxy):
 
     logger.info("Worker {} is idle, preparing to send the {} task to {}\n".format(worker_id, new_task['display_name'], task_endpoint))
     try:
-        requests.post(task_endpoint, json=new_task)
+        requests.post(task_endpoint, json=new_task, timeout=60)
         worker_proxy['status'] = 'Working'
     except:
         logger.error("Sending Worker: {} a task did not return a response, setting worker status as 'Disconnected'\n".format(worker_id))
