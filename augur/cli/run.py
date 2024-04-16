@@ -80,7 +80,7 @@ def worker_start(worker_name=None, instance_number=0, worker_port=None):
     try:
         time.sleep(30 * instance_number)
         destination = subprocess.DEVNULL
-        process = subprocess.Popen("cd workers/{} && {}_start".format(worker_name,worker_name), shell=True, stdout=destination, stderr=subprocess.STDOUT)
+        process = subprocess.Popen("cd workers/{} && {}_start".format(worker_name,worker_name), shell=False, stdout=destination, stderr=subprocess.STDOUT)
         logger.info("{} #{} booted.".format(worker_name,instance_number+1))
     except KeyboardInterrupt as e:
         pass

@@ -118,7 +118,7 @@ def analysis(cfg, multithreaded):
 
         parents = subprocess.Popen(["git --git-dir %s log --ignore-missing "
             "--pretty=format:'%%H' --since=%s" % (repo_loc,start_date)],
-            stdout=subprocess.PIPE, shell=True)
+            stdout=subprocess.PIPE, shell=False)
 
         parent_commits = set(parents.stdout.read().decode("utf-8",errors="ignore").split(os.linesep))
 

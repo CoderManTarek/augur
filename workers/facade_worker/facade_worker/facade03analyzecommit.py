@@ -243,7 +243,7 @@ def analyze_commit(cfg, repo_id, repo_loc, commit, multithreaded):
 		"author_name: %%an%%nauthor_email: %%ae%%nauthor_date:%%ai%%n"
 		"committer_name: %%cn%%ncommitter_email: %%ce%%ncommitter_date: %%ci%%n"
 		"parents: %%p%%nEndPatch' "
-		% (repo_loc,commit)], stdout=subprocess.PIPE, shell=True)
+		% (repo_loc,commit)], stdout=subprocess.PIPE, shell=False)
 
 	## 
 

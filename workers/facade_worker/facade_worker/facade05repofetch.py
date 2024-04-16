@@ -121,7 +121,7 @@ def git_repo_initialize(cfg, repo_group_id=None):
                 (git,repo_name))
 
         # Create the prerequisite directories
-        return_code = subprocess.Popen(['mkdir -p %s' %repo_path],shell=True).wait()
+        return_code = subprocess.Popen(['mkdir -p %s' %repo_path],shell=False).wait()
 #        cfg.log_activity('Info','Return code value when making directors from facade05, line 120: {:d}'.format(return_code))
 
 
@@ -149,7 +149,7 @@ def git_repo_initialize(cfg, repo_group_id=None):
         cfg.log_activity('Verbose','Cloning: %s' % git)
 
         cmd = "git -C %s clone '%s' %s" % (repo_path,git,repo_name)
-        return_code = subprocess.Popen([cmd], shell=True).wait()
+        return_code = subprocess.Popen([cmd], shell=False).wait()
 
         if (return_code == 0):
             # If cloning succeeded, repo is ready for analysis
@@ -303,7 +303,7 @@ def git_repo_updates(cfg):
             cmd = ("git -C %s%s/%s%s pull"
                 % (cfg.repo_base_directory,row[1],row[4],row[3]))#['projects_id'],row['path'],row['name']))
 
-            return_code = subprocess.Popen([cmd],shell=True).wait()
+            return_code = subprocess.Popen([cmd],shell=False).wait()
 
             # If the attempt succeeded, then don't try any further fixes. If
             # the attempt to fix things failed, give up and try next time.
@@ -317,12 +317,12 @@ def git_repo_updates(cfg):
                 cmd_reset = ("git -C %s%s/%s%s reset --hard origin/master"
                     % (cfg.repo_base_directory,row[1],row[4],row[3]))
 
-                return_code_reset = subprocess.Popen([cmd_reset],shell=True).wait()
+                return_code_reset = subprocess.Popen([cmd_reset],shell=False).wait()
 
                 cmd_clean = ("git -C %s%s/%s%s clean -df"
                     % (cfg.repo_base_directory,row[1],row[4],row[3]))
 
-                return_code_clean = subprocess.Popen([cmd_clean],shell=True).wait()
+                return_code_clean = subprocess.Popen([cmd_clean],shell=False).wait()
 
             attempt += 1
 

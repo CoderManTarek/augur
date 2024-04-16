@@ -77,13 +77,13 @@ def parse_json(doc_1, cre_1, pac_1, pac_lif_1, pac_2, fil_dat_1, fil_rel_1, bas_
 
 def grabreg(records, repo_id, dsfile):
     print("DETAILS FOUND. CREATING DOCUMENT")
-    proc = subprocess.Popen("dosocs2 generate " + str(records[0][0]), shell=True, stdout=PIPE, stderr=PIPE)
+    proc = subprocess.Popen("dosocs2 generate " + str(records[0][0]), shell=False, stdout=PIPE, stderr=PIPE)
     varerr = str(str(proc.stderr.read()).split(" ")[3])
     charvarerr = varerr.split("\\")[0]
     print("Document_id: " + str(charvarerr))
     #f = open("/home/sean/dosocs2/accessDB/scans-tv/" + repo_name + "-full.txt","w")
     #proc = subprocess.call("dosocs2 print " + str(charvarerr) + " -T 2.0.tag.coverage", shell=True, stdout=f, stderr=f)
-    pope = subprocess.Popen("dosocs2 print " + str(charvarerr) + " -T " + dsfile, shell=True, stdout=PIPE, stderr=PIPE)
+    pope = subprocess.Popen("dosocs2 print " + str(charvarerr) + " -T " + dsfile, shell=False, stdout=PIPE, stderr=PIPE)
     out, err = pope.communicate()
     #if out:
         #with open('ex-raw.txt', 'w+') as example:

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # TODO: not this...
 def worker_start(worker_name=None):
-    process = subprocess.Popen("cd workers/{} && {}_start".format(worker_name,worker_name), shell=True)
+    process = subprocess.Popen("cd workers/{} && {}_start".format(worker_name,worker_name), shell=False)
 
 def send_task(worker_proxy):
 
