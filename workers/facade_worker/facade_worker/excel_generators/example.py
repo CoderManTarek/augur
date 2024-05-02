@@ -44,9 +44,9 @@ def get_setting(setting):
 
 # Get a setting from the database
 
-	query = ("SELECT value FROM settings WHERE setting='%s' ORDER BY "
-		"last_modified DESC LIMIT 1" % setting)
-	cursor.execute(query)
+	query = "SELECT value FROM settings WHERE setting=?%s ORDER BY "
+		"last_modified DESC LIMIT 1"
+	cursor.execute(query, (setting, ))
 	return cursor.fetchone()["value"]
 
 ### The real program starts here ###
