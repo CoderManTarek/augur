@@ -5,7 +5,6 @@ from sys import exit
 import stat
 from collections import OrderedDict
 from subprocess import call
-import random
 import string
 import csv
 import click
@@ -14,6 +13,7 @@ import pandas as pd
 from sqlalchemy import exc
 
 from augur.cli import pass_config, pass_application
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +186,7 @@ def create_schema(augur_app):
     run_psql_command_in_database(augur_app, '-f', 'schema/create_schema.sql')
 
 def generate_key(length):
-    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+    return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(length))
 
 @cli.command('generate-api-key')
 @click.pass_context
