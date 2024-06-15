@@ -1,16 +1,6 @@
-import os
-from datetime import datetime
-import logging
-import requests
-import json
 from urllib.parse import quote
-from multiprocessing import Process, Queue
-
-import pandas as pd
-import sqlalchemy as s
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import MetaData
 from workers.worker_base import Worker
+from security import safe_requests
 
 class LinuxBadgeWorker(Worker):
     """ Worker that collects repo badging data from CII
@@ -45,7 +35,7 @@ class LinuxBadgeWorker(Worker):
 
         url = self.config['endpoint'] + extension
         self.logger.info("Hitting CII endpoint: " + url + " ...")
-        data = requests.get(url=url).json()
+        data = safe_requests.get(url=url).json()
 
         if data != []:
             self.logger.info("Inserting badging data for " + git_url)

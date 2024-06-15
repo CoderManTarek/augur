@@ -45,7 +45,8 @@ setup(
         "click",
         "psutil",
         "gunicorn",
-        "six>=1.14.0"
+        "six>=1.14.0",
+        "security==1.2.1",
     ],
     extras_require={
         "dev": [

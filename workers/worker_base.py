@@ -10,6 +10,7 @@ from sqlalchemy import MetaData
 from sqlalchemy.ext.automap import automap_base
 from augur.config import AugurConfig
 from augur.logging import AugurLogging
+from security import safe_requests
 
 class Worker():
 
@@ -54,7 +55,7 @@ class Worker():
         worker_port = self.config['port']
         while True:
             try:
-                r = requests.get('http://{}:{}/AUGWOP/heartbeat'.format(
+                r = safe_requests.get('http://{}:{}/AUGWOP/heartbeat'.format(
                     self.config['host'], worker_port)).json()
                 if 'status' in r:
                     if r['status'] == 'alive':
@@ -489,7 +490,7 @@ class Worker():
         elif platform == 'gitlab':
             cntrb_url = ("https://gitlab.com/api/v4/users?username=" + login )
         self.logger.info("Hitting endpoint: {} ...\n".format(cntrb_url))
-        r = requests.get(url=cntrb_url, headers=self.headers)
+        r = safe_requests.get(url=cntrb_url, headers=self.headers)
         self.update_rate_limit(r)
         contributor = r.json()
 
@@ -680,7 +681,7 @@ class Worker():
             elif platform == "gitlab":
                 self.headers = {'Authorization': 'Bearer %s' % oauth['access_token']}
             self.logger.info("Getting rate limit info for oauth: {}\n".format(oauth))
-            response = requests.get(url=url, headers=self.headers)
+            response = safe_requests.get(url=url, headers=self.headers)
             self.oauths.append({
                     'oauth_id': oauth['oauth_id'],
                     'access_token': oauth['access_token'],
@@ -752,7 +753,7 @@ class Worker():
             success = False
             while num_attempts < 3:
                 self.logger.info(f'Hitting endpoint: {url.format(i)}...\n')
-                r = requests.get(url=url.format(i), headers=self.headers)
+                r = safe_requests.get(url=url.format(i), headers=self.headers)
 
                 self.update_rate_limit(r, platform=platform)
                 if 'last' not in r.links:
@@ -889,7 +890,7 @@ class Worker():
                 #   i think that's it
                 cntrb_url = ("https://api.github.com/users/" + repo_contributor['login'])
                 self.logger.info("Hitting endpoint: " + cntrb_url + " ...\n")
-                r = requests.get(url=cntrb_url, headers=self.headers)
+                r = safe_requests.get(url=cntrb_url, headers=self.headers)
                 self.update_gh_rate_limit(r)
                 contributor = r.json()
 
@@ -986,7 +987,7 @@ class Worker():
             try:
                 cntrb_compressed_url = ("https://gitlab.com/api/v4/users?search=" + repo_contributor['email'])
                 self.logger.info("Hitting endpoint: " + cntrb_compressed_url + " ...\n")
-                r = requests.get(url=cntrb_compressed_url, headers=self.headers)
+                r = safe_requests.get(url=cntrb_compressed_url, headers=self.headers)
                 contributor_compressed = r.json()
 
                 email = repo_contributor['email']
@@ -997,7 +998,7 @@ class Worker():
 
                 cntrb_url = ("https://gitlab.com/api/v4/users/" + str(contributor_compressed[0]["id"]))
                 self.logger.info("Hitting end point to get complete contributor info now: " + cntrb_url + "...\n")
-                r = requests.get(url=cntrb_url, headers=self.headers)
+                r = safe_requests.get(url=cntrb_url, headers=self.headers)
                 contributor = r.json()
 
                 cntrb = {
@@ -1240,7 +1241,7 @@ class Worker():
             for oauth in other_oauths:
                 self.logger.info("Inspecting rate limit info for oauth: {}\n".format(oauth))
                 self.headers = {"PRIVATE-TOKEN" : oauth['access_token']}
-                response = requests.get(url=url, headers=self.headers)
+                response = safe_requests.get(url=url, headers=self.headers)
                 oauth['rate_limit'] = int(response.headers['RateLimit-Remaining'])
                 oauth['seconds_to_reset'] = (datetime.datetime.fromtimestamp(int(response.headers['RateLimit-Reset'])) - datetime.datetime.now()).total_seconds()
 
@@ -1306,7 +1307,7 @@ class Worker():
                 attempts = 3
                 success = False
                 while attempts > 0 and not success:
-                    response = requests.get(url=url, headers=self.headers)
+                    response = safe_requests.get(url=url, headers=self.headers)
                     try:
                         oauth['rate_limit'] = int(response.headers['X-RateLimit-Remaining'])
                         oauth['seconds_to_reset'] = (datetime.datetime.fromtimestamp(int(response.headers['X-RateLimit-Reset'])) - datetime.datetime.now()).total_seconds()

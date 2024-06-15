@@ -1,9 +1,6 @@
-import logging, os, sys, time, requests, json
-from datetime import datetime
-from multiprocessing import Process, Queue
-import pandas as pd
-import sqlalchemy as s
+import requests, json
 from workers.worker_base import Worker
+from security import safe_requests
 
 # NOTE: This worker primarily inserts rows into the REPO_INFO table, which serves the primary purposes of 
 # 1. Displaying discrete metadata like "number of forks" and how they change over time 
@@ -227,7 +224,7 @@ class RepoInfoWorker(Worker):
 
         try:
             while True:
-                r = requests.get(url, headers=self.headers)
+                r = safe_requests.get(url, headers=self.headers)
                 self.update_gh_rate_limit(r)
                 committers += len(r.json())
 
@@ -244,7 +241,7 @@ class RepoInfoWorker(Worker):
         self.logger.info('Querying parent info to verify if the repo is forked\n')
         url = f'https://api.github.com/repos/{owner}/{repo}'
 
-        r = requests.get(url, headers=self.headers)
+        r = safe_requests.get(url, headers=self.headers)
         self.update_gh_rate_limit(r)
 
         data = self.get_repo_data(url, r)
@@ -260,7 +257,7 @@ class RepoInfoWorker(Worker):
         self.logger.info('Querying committers count\n')
         url = f'https://api.github.com/repos/{owner}/{repo}'
 
-        r = requests.get(url, headers=self.headers)
+        r = safe_requests.get(url, headers=self.headers)
         self.update_gh_rate_limit(r)
 
         data = self.get_repo_data(url, r)

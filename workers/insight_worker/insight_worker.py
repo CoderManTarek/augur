@@ -1,17 +1,15 @@
-from multiprocessing import Process, Queue
-from urllib.parse import urlparse
-import requests, sys
+import requests
 import pandas as pd
 import sqlalchemy as s
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import MetaData, and_
-import statistics, logging, os, json, time
+import logging, json
 import numpy as np
 import scipy.stats
 import datetime
 from sklearn.ensemble import IsolationForest
 from workers.worker_base import Worker
 import warnings
+from security import safe_requests
+
 warnings.filterwarnings('ignore')
 
 class InsightWorker(Worker):
@@ -72,9 +70,9 @@ class InsightWorker(Worker):
             url = base_url + endpoint
             logging.info("Hitting endpoint: " + url + "\n")
             try:
-                data = requests.get(url=url).json()
+                data = safe_requests.get(url=url).json()
             except:
-                data = json.loads(json.dumps(requests.get(url=url).text))
+                data = json.loads(json.dumps(safe_requests.get(url=url).text))
 
             if len(data) == 0:
                 logging.info("Endpoint with url: {} returned an empty response. Moving on to next endpoint.\n".format(url))
@@ -331,7 +329,7 @@ class InsightWorker(Worker):
             # Hit endpoint
             url = base_url + endpoint['cm_info']
             logging.info("Hitting endpoint: " + url + "\n")
-            r = requests.get(url=url)
+            r = safe_requests.get(url=url)
             data = r.json()
 
             def is_unique_key(key):
@@ -653,7 +651,7 @@ class InsightWorker(Worker):
         logging.info("Preparing to update metrics ...\n\n" + 
             "Hitting endpoint: http://{}:{}/api/unstable/metrics/status ...\n".format(
             self.config['api_host'],self.config['api_port']))
-        r = requests.get(url='http://{}:{}/api/unstable/metrics/status'.format(
+        r = safe_requests.get(url='http://{}:{}/api/unstable/metrics/status'.format(
             self.config['api_host'],self.config['api_port']))
         data = r.json()
 

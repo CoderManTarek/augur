@@ -2,9 +2,6 @@
 """
 Creates routes for the manager
 """
-
-import logging
-import time
 import requests
 import sqlalchemy as s
 from sqlalchemy import exc
@@ -12,6 +9,7 @@ from flask import request, Response
 import json
 from augur.config import AugurConfig
 import os 
+from security import safe_requests
 
 
 def create_routes(server):
@@ -209,11 +207,11 @@ class Repo_insertion_manager():
 ####### Original request code
 #        res = requests.get(url).json()
 ########
-        res = requests.get(url=url, headers=self.headers).json()
+        res = safe_requests.get(url=url, headers=self.headers).json()
         try:
             if res['message'] == "Not Found":
                 url = url = "https://api.github.com/users/{}".format(self.org) 
-                res = requests.get(url=url, headers=self.headers).json()
+                res = safe_requests.get(url=url, headers=self.headers).json()
                 if res['message'] == "Not Found":
                     return False
         except KeyError:
@@ -266,12 +264,12 @@ class Repo_insertion_manager():
         repos = []
         page = 1
         url = self.paginate(page)
-        res = requests.get(url, headers=self.headers).json()
+        res = safe_requests.get(url, headers=self.headers).json()
         while res:
             for repo in res:
                 repos.append(repo['name'])
             page += 1
-            res = requests.get(self.paginate(page)).json()
+            res = safe_requests.get(self.paginate(page)).json()
         return repos
 
 ## Modified pagination to account for github orgs that look like orgs but are actually users. 
@@ -280,10 +278,10 @@ class Repo_insertion_manager():
         gh_api_key = self.augur_config.get_value('Database', 'key')
         self.headers = {'Authorization': 'token %s' % gh_api_key}    
         url = "https://api.github.com/orgs/{}/repos?per_page=100&page={}"
-        res = requests.get(url, headers=self.headers).json()
+        res = safe_requests.get(url, headers=self.headers).json()
         if res['message'] == "Not Found":
             url = "https://api.github.com/users/{}/repos?per_page=100&page={}" 
-            res = requests.get(url=url, headers=self.headers).json()
+            res = safe_requests.get(url=url, headers=self.headers).json()
         return url.format(self.org, str(page))
 
 
@@ -291,7 +289,7 @@ class Repo_insertion_manager():
 ####### Original request code
 #        res = requests.get(url).json()
 ########
-        res = requests.get(url=url, headers=self.headers).json()
+        res = safe_requests.get(url=url, headers=self.headers).json()
 
 
 

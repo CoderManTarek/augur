@@ -8,6 +8,7 @@ import time
 import subprocess
 import requests
 from flask import request, Response
+from security import safe_requests
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ def send_task(worker_proxy):
     task_endpoint = worker_proxy['location'] + '/AUGWOP/task'
 
     # Check if worker is alive
-    r = requests.get('{}/AUGWOP/heartbeat'.format(
+    r = safe_requests.get('{}/AUGWOP/heartbeat'.format(
         worker_proxy['location']))
     j = r.json()
 

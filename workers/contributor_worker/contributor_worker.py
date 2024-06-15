@@ -1,15 +1,10 @@
-from multiprocessing import Process, Queue
-from urllib.parse import urlparse
-import requests, sys
 import pandas as pd
 import sqlalchemy as s
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import MetaData, and_
-import statistics, logging, os, json, time
-import numpy as np
+import json
 import datetime
 
 from workers.worker_base import Worker
+from security import safe_requests
 
 class ContributorWorker(Worker):
     """ Worker that detects anomalies on a select few of our metrics
@@ -209,7 +204,7 @@ class ContributorWorker(Worker):
                             cmt_cntrb['email'])
 
                 self.logger.info("Hitting endpoint: " + url + " ...\n")
-                r = requests.get(url=url, headers=self.headers)
+                r = safe_requests.get(url=url, headers=self.headers)
                 self.update_gh_rate_limit(r)
                 results = r.json()
 
@@ -232,7 +227,7 @@ class ContributorWorker(Worker):
 
                 cntrb_url = ("https://api.github.com/users/" + match['login'])
                 self.logger.info("Hitting endpoint: " + cntrb_url + " ...\n")
-                r = requests.get(url=cntrb_url, headers=self.headers)
+                r = safe_requests.get(url=cntrb_url, headers=self.headers)
                 self.update_gh_rate_limit(r)
                 contributor = r.json()
 
