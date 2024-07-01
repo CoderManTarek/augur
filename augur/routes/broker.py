@@ -8,12 +8,13 @@ import time
 import subprocess
 import requests
 from flask import request, Response
+from security import safe_command
 
 logger = logging.getLogger(__name__)
 
 # TODO: not this...
 def worker_start(worker_name=None):
-    process = subprocess.Popen("cd workers/{} && {}_start".format(worker_name,worker_name), shell=True)
+    process = safe_command.run(subprocess.Popen, "cd workers/{} && {}_start".format(worker_name,worker_name), shell=True)
 
 def send_task(worker_proxy):
 

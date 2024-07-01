@@ -36,6 +36,7 @@ import os
 import getopt
 import xlsxwriter
 import configparser
+from security import safe_command
 
 def git_repo_cleanup(cfg):
 
@@ -56,7 +57,7 @@ def git_repo_cleanup(cfg):
 		cmd = ("rm -rf %s%s/%s%s"
 			% (cfg.repo_base_directory,row[1],row[2],row[3]))
 
-		return_code = subprocess.Popen([cmd],shell=True).wait()
+		return_code = safe_command.run(subprocess.Popen, [cmd],shell=True).wait()
 
 		# Remove the analysis data
 
@@ -133,7 +134,7 @@ def git_repo_cleanup(cfg):
 			cleanup = cleanup[:cleanup.rfind('/',0)]
 
 			cmd = "rmdir %s%s" % (cfg.repo_base_directory,cleanup)
-			subprocess.Popen([cmd],shell=True).wait()
+			safe_command.run(subprocess.Popen, [cmd],shell=True).wait()
 			log_activity('Verbose','Attempted %s' % cmd)
 
 		update_repo_log(row[0],'Deleted')

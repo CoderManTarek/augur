@@ -38,6 +38,7 @@ import xlsxwriter
 import configparser
 from facade_worker.facade02utilitymethods import update_repo_log, trim_commit, store_working_author, trim_author
 from facade_worker.facade03analyzecommit import analyze_commit
+from security import safe_command
 
 # if platform.python_implementation() == 'PyPy':
 #   import pymysql
@@ -116,7 +117,7 @@ def analysis(cfg, multithreaded):
             repo[3]))
         # Grab the parents of HEAD
 
-        parents = subprocess.Popen(["git --git-dir %s log --ignore-missing "
+        parents = safe_command.run(subprocess.Popen, ["git --git-dir %s log --ignore-missing "
             "--pretty=format:'%%H' --since=%s" % (repo_loc,start_date)],
             stdout=subprocess.PIPE, shell=True)
 

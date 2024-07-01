@@ -39,6 +39,7 @@ import configparser
 import traceback 
 
 from workers.util import read_config
+from security import safe_command
 
 def analyze_commit(cfg, repo_id, repo_loc, commit, multithreaded):
 
@@ -238,7 +239,7 @@ def analyze_commit(cfg, repo_id, repo_loc, commit, multithreaded):
 
 	# Read the git log
 
-	git_log = subprocess.Popen(["git --git-dir %s log -p -M %s -n1 "
+	git_log = safe_command.run(subprocess.Popen, ["git --git-dir %s log -p -M %s -n1 "
 		"--pretty=format:'"
 		"author_name: %%an%%nauthor_email: %%ae%%nauthor_date:%%ai%%n"
 		"committer_name: %%cn%%ncommitter_email: %%ce%%ncommitter_date: %%ci%%n"
